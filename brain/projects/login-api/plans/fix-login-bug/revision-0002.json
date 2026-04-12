@@ -1,0 +1,30 @@
+{
+  "revision": 2,
+  "projectId": "login-api",
+  "goalId": "fix-login-bug",
+  "goalDescription": "Fix the bug from last run",
+  "status": "active",
+  "strategy": "initial-discovery",
+  "constraints": [],
+  "steps": [],
+  "decisions": [
+    {
+      "id": "fixed-security-bug-from-previous-run",
+      "text": "Fixed security bug from previous run",
+      "topic": null,
+      "rationale": null,
+      "createdAt": "2026-04-12T11:28:22.652Z"
+    },
+    {
+      "id": "jwt-refresh-tokens-middleware-validation",
+      "text": "JWT + Refresh Tokens + Middleware validation",
+      "topic": null,
+      "rationale": null,
+      "createdAt": "2026-04-12T11:28:22.652Z"
+    }
+  ],
+  "issues": [],
+  "notes": [],
+  "createdAt": "2026-04-12T11:28:13.370Z",
+  "updatedAt": "2026-04-12T11:28:22.652Z"
+}

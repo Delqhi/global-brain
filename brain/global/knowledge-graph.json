@@ -1,5 +1,35 @@
 {
-  "nodes": [],
-  "edges": [],
-  "updatedAt": "2026-04-12T11:05:37.541Z"
+  "nodes": [
+    {
+      "id": "rule-fc78ee2f-f738-4792-bf42-0b6dcba3e0af",
+      "type": "rule",
+      "scope": "global",
+      "topic": "auth-validation",
+      "text": "Always validate JWT + Refresh Token in auth flows",
+      "status": "active",
+      "score": 1,
+      "updatedAt": "2026-04-12T11:28:22.656Z"
+    },
+    {
+      "id": "rule-c7ca0adb-6328-4697-a9f1-a032fa36c37f",
+      "type": "rule",
+      "scope": "global",
+      "topic": "auth-validation",
+      "text": "Always validate JWT + Refresh Token in auth flows",
+      "status": "active",
+      "score": 1,
+      "updatedAt": "2026-04-12T11:28:32.310Z"
+    }
+  ],
+  "edges": [
+    {
+      "id": "graph-edge-84f9dbc9-5660-4fc5-b542-afd320425c43",
+      "sourceId": "rule-c7ca0adb-6328-4697-a9f1-a032fa36c37f",
+      "targetId": "rule-fc78ee2f-f738-4792-bf42-0b6dcba3e0af",
+      "relation": "extends",
+      "weight": 0.6,
+      "updatedAt": "2026-04-12T11:28:32.317Z"
+    }
+  ],
+  "updatedAt": "2026-04-12T11:28:32.317Z"
 }

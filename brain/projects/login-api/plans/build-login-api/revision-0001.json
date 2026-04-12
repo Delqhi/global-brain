@@ -1,0 +1,15 @@
+{
+  "revision": 1,
+  "projectId": "login-api",
+  "goalId": "build-login-api",
+  "goalDescription": "Build a simple login API endpoint",
+  "status": "active",
+  "strategy": "initial-discovery",
+  "constraints": [],
+  "steps": [],
+  "decisions": [],
+  "issues": [],
+  "notes": [],
+  "createdAt": "2026-04-12T11:17:34.738Z",
+  "updatedAt": "2026-04-12T11:17:34.738Z"
+}

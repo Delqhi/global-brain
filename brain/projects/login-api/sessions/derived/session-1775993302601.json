@@ -1,0 +1,18 @@
+{
+  "sessionId": "session-1775993302601",
+  "projectId": "login-api",
+  "goalId": "fix-login-bug",
+  "messageCount": 2,
+  "lastUserMessage": "Ensure old JWT strategies are not repeated",
+  "lastAssistantMessage": "{\"planUpdate\":{\"decisions\":[\"Fixed security bug from previous run\",\"JWT + Refresh Tokens + Middleware validation\"],\"completedStepIds\":[\"step-refresh-token\",\"step-logout\"],\"newSteps\":[],\"issues\":[]},\"memoryUpdate\":{\"rules\":[{\"text\":\"Always validate JWT + Refresh Token in auth flows\",\"topic\":\"auth-validation\"}],\"invalidations\":[]},\"resultSummary\":\"Fixed login endpoint - added Refresh-Token-Flow + JWT middleware validation. Old JWT without refresh was respected (bypassed).\"}",
+  "currentStrategy": "initial-discovery",
+  "openIssueCount": 0,
+  "invalidatedEntries": [],
+  "addedKnowledge": [
+    "Always validate JWT + Refresh Token in auth flows"
+  ],
+  "reflectionSummary": null,
+  "reflectionQualityScore": null,
+  "reflectionSuggestions": [],
+  "updatedAt": "2026-04-12T11:28:22.669Z"
+}

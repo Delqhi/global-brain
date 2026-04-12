@@ -1,0 +1,183 @@
+{
+  "nodes": [
+    {
+      "id": "forbidden-e9399a81-2f47-4bc6-a328-8d0ef0cc1205",
+      "type": "forbidden",
+      "scope": "project",
+      "topic": "auth-api-strategy",
+      "text": "Use API A",
+      "status": "invalidated",
+      "score": 0,
+      "updatedAt": "2026-04-12T11:26:10.991Z"
+    },
+    {
+      "id": "forbidden-409df24a-05cc-4c76-bb7a-52edfeb5d19a",
+      "type": "forbidden",
+      "scope": "project",
+      "topic": "jwt-strategy",
+      "text": "Old JWT without refresh",
+      "status": "invalidated",
+      "score": 0,
+      "updatedAt": "2026-04-12T11:26:10.991Z"
+    },
+    {
+      "id": "fact-c86fd6e7-2599-4bc5-b446-552e885347f7",
+      "type": "fact",
+      "scope": "project",
+      "topic": null,
+      "text": "Dry run captured task intent: Implement /login endpoint with JWT auth",
+      "status": "active",
+      "score": 1,
+      "updatedAt": "2026-04-12T11:24:20.355Z"
+    },
+    {
+      "id": "fact-8609f237-2a39-41a0-9eec-fc2c59202e39",
+      "type": "fact",
+      "scope": "project",
+      "topic": "login-api-spec",
+      "text": "POST /login accepts email+password, returns access token in body and refresh token in httpOnly cookie",
+      "status": "active",
+      "score": 1,
+      "updatedAt": "2026-04-12T11:26:10.988Z"
+    },
+    {
+      "id": "fact-01f2b114-6338-44bc-ac4b-764eca703f89",
+      "type": "fact",
+      "scope": "project",
+      "topic": "security",
+      "text": "bcrypt cost factor 12 chosen for balance of security and response time (<300ms)",
+      "status": "active",
+      "score": 1,
+      "updatedAt": "2026-04-12T11:26:10.989Z"
+    },
+    {
+      "id": "decision-8de27cef-d621-428a-9733-6ce7bfe8162f",
+      "type": "decision",
+      "scope": "project",
+      "topic": "jwt-strategy",
+      "text": "JWT access tokens expire in 15 minutes; refresh tokens valid 7 days",
+      "status": "active",
+      "score": 1,
+      "updatedAt": "2026-04-12T11:26:10.989Z"
+    },
+    {
+      "id": "decision-422509c1-601a-4697-b9db-07a8c17004b2",
+      "type": "decision",
+      "scope": "project",
+      "topic": "token-storage",
+      "text": "Refresh tokens stored server-side in Redis for instant revocation capability",
+      "status": "active",
+      "score": 1,
+      "updatedAt": "2026-04-12T11:26:10.989Z"
+    },
+    {
+      "id": "forbidden-499eb219-5080-4033-8483-b5cc7b850b53",
+      "type": "forbidden",
+      "scope": "project",
+      "topic": "jwt-strategy",
+      "text": "Stateless JWT without server-side token tracking",
+      "status": "active",
+      "score": 1,
+      "updatedAt": "2026-04-12T11:26:10.989Z"
+    }
+  ],
+  "edges": [
+    {
+      "id": "graph-edge-132a83cd-04c3-489b-bd92-81e76d4af45c",
+      "sourceId": "decision-8de27cef-d621-428a-9733-6ce7bfe8162f",
+      "targetId": "forbidden-409df24a-05cc-4c76-bb7a-52edfeb5d19a",
+      "relation": "contradicts",
+      "weight": 0.6,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-99e84228-7a1d-4170-8fe0-79e12a66ed1e",
+      "sourceId": "forbidden-499eb219-5080-4033-8483-b5cc7b850b53",
+      "targetId": "forbidden-409df24a-05cc-4c76-bb7a-52edfeb5d19a",
+      "relation": "contradicts",
+      "weight": 0.6,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-628f6382-a318-4e6c-8f28-f60f6c2d2181",
+      "sourceId": "fact-8609f237-2a39-41a0-9eec-fc2c59202e39",
+      "targetId": "forbidden-e9399a81-2f47-4bc6-a328-8d0ef0cc1205",
+      "relation": "invalidates",
+      "weight": 1,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-75949e37-872b-4f59-8854-87dccda450bd",
+      "sourceId": "fact-01f2b114-6338-44bc-ac4b-764eca703f89",
+      "targetId": "forbidden-e9399a81-2f47-4bc6-a328-8d0ef0cc1205",
+      "relation": "invalidates",
+      "weight": 1,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-708bd5ad-87b0-476b-b0f6-4e1a5dc8dc4d",
+      "sourceId": "decision-8de27cef-d621-428a-9733-6ce7bfe8162f",
+      "targetId": "forbidden-e9399a81-2f47-4bc6-a328-8d0ef0cc1205",
+      "relation": "invalidates",
+      "weight": 1,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-c0aab255-0264-4079-a28a-b02e5193f3d7",
+      "sourceId": "decision-422509c1-601a-4697-b9db-07a8c17004b2",
+      "targetId": "forbidden-e9399a81-2f47-4bc6-a328-8d0ef0cc1205",
+      "relation": "invalidates",
+      "weight": 1,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-cdfc9c13-d4ef-486b-ba1e-89515d1a53e7",
+      "sourceId": "forbidden-499eb219-5080-4033-8483-b5cc7b850b53",
+      "targetId": "forbidden-e9399a81-2f47-4bc6-a328-8d0ef0cc1205",
+      "relation": "invalidates",
+      "weight": 1,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-743f3382-f5cd-4bf6-a0a7-8709500313c0",
+      "sourceId": "fact-8609f237-2a39-41a0-9eec-fc2c59202e39",
+      "targetId": "forbidden-409df24a-05cc-4c76-bb7a-52edfeb5d19a",
+      "relation": "invalidates",
+      "weight": 1,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-d4a80418-87a2-4964-bb53-f772512ff986",
+      "sourceId": "fact-01f2b114-6338-44bc-ac4b-764eca703f89",
+      "targetId": "forbidden-409df24a-05cc-4c76-bb7a-52edfeb5d19a",
+      "relation": "invalidates",
+      "weight": 1,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-3bb4c41b-b974-4e53-a0a7-daa22ace55fe",
+      "sourceId": "decision-8de27cef-d621-428a-9733-6ce7bfe8162f",
+      "targetId": "forbidden-409df24a-05cc-4c76-bb7a-52edfeb5d19a",
+      "relation": "invalidates",
+      "weight": 1,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-a33ee476-3868-4987-8de8-fff72a2c1bb5",
+      "sourceId": "decision-422509c1-601a-4697-b9db-07a8c17004b2",
+      "targetId": "forbidden-409df24a-05cc-4c76-bb7a-52edfeb5d19a",
+      "relation": "invalidates",
+      "weight": 1,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    },
+    {
+      "id": "graph-edge-0f5219d6-de2d-4bd0-8aa0-637f39915b75",
+      "sourceId": "forbidden-499eb219-5080-4033-8483-b5cc7b850b53",
+      "targetId": "forbidden-409df24a-05cc-4c76-bb7a-52edfeb5d19a",
+      "relation": "invalidates",
+      "weight": 1,
+      "updatedAt": "2026-04-12T11:26:10.995Z"
+    }
+  ],
+  "updatedAt": "2026-04-12T11:28:32.317Z"
+}

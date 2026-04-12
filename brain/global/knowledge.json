@@ -1,3 +1,56 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "id": "rule-fc78ee2f-f738-4792-bf42-0b6dcba3e0af",
+      "type": "rule",
+      "text": "Always validate JWT + Refresh Token in auth flows",
+      "topic": "auth-validation",
+      "status": "active",
+      "scope": "global",
+      "score": 1,
+      "tags": [],
+      "source": {
+        "projectId": "login-api",
+        "goalId": "fix-login-bug",
+        "sessionId": "session-1775993302601",
+        "sourceType": "execution"
+      },
+      "rationale": null,
+      "createdAt": "2026-04-12T11:28:22.656Z",
+      "updatedAt": "2026-04-12T11:28:22.656Z",
+      "invalidatedBy": [],
+      "invalidates": [],
+      "replacesTopic": false,
+      "driftStatus": "fresh",
+      "driftReasons": [],
+      "lastValidatedAt": "2026-04-12T11:28:22.656Z",
+      "ageDays": 0
+    },
+    {
+      "id": "rule-c7ca0adb-6328-4697-a9f1-a032fa36c37f",
+      "type": "rule",
+      "text": "Always validate JWT + Refresh Token in auth flows",
+      "topic": "auth-validation",
+      "status": "active",
+      "scope": "global",
+      "score": 1,
+      "tags": [],
+      "source": {
+        "projectId": "login-api",
+        "goalId": "fix-login-bug",
+        "sessionId": "session-1775993312260",
+        "sourceType": "execution"
+      },
+      "rationale": null,
+      "createdAt": "2026-04-12T11:28:32.310Z",
+      "updatedAt": "2026-04-12T11:28:32.310Z",
+      "invalidatedBy": [],
+      "invalidates": [],
+      "replacesTopic": false,
+      "driftStatus": "fresh",
+      "driftReasons": [],
+      "lastValidatedAt": "2026-04-12T11:28:32.310Z",
+      "ageDays": 0
+    }
+  ]
 }

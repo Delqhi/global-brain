@@ -9,20 +9,10 @@ import {
 import { ensureGoal } from "./goal-engine.js";
 import { applyMemoryUpdate, loadMergedKnowledge } from "./memory-engine.js";
 import { OpenCodeRunner } from "./opencode-runner.js";
-import {
-  applyPlanUpdate,
-  buildInitialPlan,
-  loadLatestPlan,
-  savePlanVersion
-} from "./plan-engine.js";
+import { applyPlanUpdate, loadLatestPlan, savePlanVersion, buildInitialPlan } from "./plan-engine.js";
 import { reflectExecution } from "./reflection-engine.js";
-import {
-  appendSessionMessage,
-  buildSessionSummary,
-  loadSessionMessages,
-  loadSessionSummary,
-  writeSessionSummary
-} from "./session-engine.js";
+import { appendSessionMessage, buildSessionSummary, loadSessionMessages, writeSessionSummary, loadSessionSummary } from "./session-engine.js";
+import { scoreStrategy } from "./meta-learning-engine.js";
 import { bidirectionalSync } from "./bidi-sync-engine.js";
 
 export async function runOrchestration({
@@ -156,6 +146,15 @@ export async function runOrchestration({
   });
 
   await writeSessionSummary(layout, sessionId, sessionSummary);
+
+  if (planAfter.strategy) {
+    let outcome = "partial";
+    if (reflection) {
+      if (reflection.qualityScore >= 0.8) outcome = "success";
+      else if (reflection.qualityScore < 0.5) outcome = "failure";
+    }
+    await scoreStrategy(layout, planAfter.strategy, outcome);
+  }
 
   const knowledgeAfter = await loadMergedKnowledge(layout);
   const contextAfter = buildActiveContext({

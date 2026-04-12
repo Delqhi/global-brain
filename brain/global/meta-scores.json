@@ -1,0 +1,11 @@
+{
+  "scores": [
+    {
+      "strategy": "initial-discovery",
+      "score": 0.6,
+      "runs": 2,
+      "goalType": "general",
+      "lastUsed": "2026-04-12T11:28:32.335Z"
+    }
+  ]
+}

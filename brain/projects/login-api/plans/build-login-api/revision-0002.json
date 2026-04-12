@@ -1,0 +1,28 @@
+{
+  "revision": 2,
+  "projectId": "login-api",
+  "goalId": "build-login-api",
+  "goalDescription": "Build a simple login API endpoint",
+  "status": "active",
+  "strategy": "initial-discovery",
+  "constraints": [],
+  "steps": [
+    {
+      "id": "dry-run-step",
+      "title": "Implement /login endpoint with JWT auth",
+      "status": "in_progress",
+      "notes": [],
+      "dependsOn": [],
+      "validation": [
+        "Replace dry-run with a live execution result."
+      ]
+    }
+  ],
+  "decisions": [],
+  "issues": [],
+  "notes": [
+    "Dry run produced a scaffolded placeholder instead of a live coding action."
+  ],
+  "createdAt": "2026-04-12T11:17:34.738Z",
+  "updatedAt": "2026-04-12T11:24:20.351Z"
+}

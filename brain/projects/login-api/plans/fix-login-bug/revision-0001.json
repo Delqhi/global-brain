@@ -1,0 +1,15 @@
+{
+  "revision": 1,
+  "projectId": "login-api",
+  "goalId": "fix-login-bug",
+  "goalDescription": "Fix the bug from last run",
+  "status": "active",
+  "strategy": "initial-discovery",
+  "constraints": [],
+  "steps": [],
+  "decisions": [],
+  "issues": [],
+  "notes": [],
+  "createdAt": "2026-04-12T11:28:13.370Z",
+  "updatedAt": "2026-04-12T11:28:13.370Z"
+}

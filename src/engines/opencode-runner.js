@@ -25,7 +25,7 @@ function collectTextParts(stdout) {
 }
 
 export class OpenCodeRunner {
-  constructor({ fallbackModel = "opencode/minimax-m2.5-free", timeoutMs = 120000 } = {}) {
+  constructor({ fallbackModel = "nvidia/stepfun-ai/step-3.5-flash", timeoutMs = 120000 } = {}) {
     this.fallbackModel = fallbackModel;
     this.timeoutMs = timeoutMs;
   }

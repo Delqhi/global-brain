@@ -1,0 +1,32 @@
+{
+  "id": "fix-login-bug",
+  "projectId": "login-api",
+  "description": "Fix the bug from last run",
+  "status": "active",
+  "constraints": [],
+  "tags": [],
+  "createdAt": "2026-04-12T11:27:57.328Z",
+  "updatedAt": "2026-04-12T11:28:32.269Z",
+  "history": [
+    {
+      "changedAt": "2026-04-12T11:27:57.328Z",
+      "description": "Fix the bug from last run",
+      "status": "active"
+    },
+    {
+      "changedAt": "2026-04-12T11:28:13.364Z",
+      "description": "Fix the bug from last run",
+      "status": "active"
+    },
+    {
+      "changedAt": "2026-04-12T11:28:22.613Z",
+      "description": "Fix the bug from last run",
+      "status": "active"
+    },
+    {
+      "changedAt": "2026-04-12T11:28:32.269Z",
+      "description": "Fix the bug from last run",
+      "status": "active"
+    }
+  ]
+}

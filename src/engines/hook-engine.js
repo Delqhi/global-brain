@@ -120,11 +120,23 @@ async function mergeIntoProjectOpenCodeConfig(projectRoot, generatedConfig) {
     ...existingConfig,
     hooks: {
       ...(existingConfig.hooks ?? {}),
-      ...(generatedConfig.hooks ?? {})
+      ...(generatedConfig.hooks ?? {}),
+      onFailure: generatedConfig.hooks?.afterRun ?? existingConfig.hooks?.onFailure
     },
     pcpm: {
       ...(existingConfig.pcpm ?? {}),
       ...(generatedConfig.pcpm ?? {})
+    },
+    memory: {
+      provider: "global-brain",
+      requirePlan: true,
+      requireActiveContext: true,
+      requireForbidden: true
+    },
+    cli: {
+      ...(existingConfig.cli ?? {}),
+      command: "opencode",
+      flags: ["--format", "json", "--non-interactive"]
     }
   };
 
