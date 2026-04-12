@@ -6,6 +6,14 @@ import {
   uniqueStrings,
   writeJsonFile
 } from "../lib/storage.js";
+import {
+  annotateKnowledgeDrift,
+  buildForbiddenList,
+  decayKnowledgeEntries,
+  deriveAutomaticInvalidations,
+  enrichKnowledgeEntry
+} from "./invalidation-engine.js";
+import { updateKnowledgeGraph } from "./knowledge-graph-engine.js";
 
 const DEFAULT_SCOPE_BY_TYPE = {
   decision: "project",
@@ -33,6 +41,7 @@ function normalizeKnowledgeEntry(type, entry, sourceMeta) {
     topic: candidate.topic ?? null,
     status: "active",
     scope: candidate.scope ?? DEFAULT_SCOPE_BY_TYPE[type] ?? "project",
+    score: candidate.score ?? 1,
     tags: uniqueStrings(candidate.tags),
     source: sourceMeta,
     rationale: candidate.rationale ?? candidate.reason ?? null,
@@ -40,7 +49,10 @@ function normalizeKnowledgeEntry(type, entry, sourceMeta) {
     updatedAt: now,
     invalidatedBy: [],
     invalidates: toArray(candidate.invalidates),
-    replacesTopic: candidate.replacesTopic ?? Boolean(candidate.topic && type === "decision")
+    replacesTopic: candidate.replacesTopic ?? Boolean(candidate.topic && type === "decision"),
+    driftStatus: candidate.driftStatus ?? "fresh",
+    driftReasons: uniqueStrings(candidate.driftReasons),
+    lastValidatedAt: candidate.lastValidatedAt ?? now
   };
 }
 
@@ -93,11 +105,13 @@ export async function loadKnowledge(layout, scope) {
 export async function loadMergedKnowledge(layout) {
   const globalKnowledge = await loadKnowledge(layout, "global");
   const projectKnowledge = await loadKnowledge(layout, "project");
+  const globalEntries = annotateKnowledgeDrift(decayKnowledgeEntries(globalKnowledge.entries ?? []));
+  const projectEntries = annotateKnowledgeDrift(decayKnowledgeEntries(projectKnowledge.entries ?? []));
 
   return {
-    global: globalKnowledge.entries ?? [],
-    project: projectKnowledge.entries ?? [],
-    active: [...(globalKnowledge.entries ?? []), ...(projectKnowledge.entries ?? [])].filter(
+    global: globalEntries,
+    project: projectEntries,
+    active: [...globalEntries, ...projectEntries].filter(
       (entry) => entry.status === "active"
     )
   };
@@ -159,10 +173,13 @@ function applyInvalidations(knowledgeEntries, invalidations, actorEntryIds) {
     }
 
     entry.status = "invalidated";
+    entry.score = 0;
     entry.updatedAt = now;
     entry.invalidatedAt = now;
     entry.invalidatedBy = uniqueStrings([...(entry.invalidatedBy ?? []), ...(actorEntryIds ?? ["system"])]);
     entry.invalidationReason = matchingInvalidation.reason ?? null;
+    entry.driftStatus = "invalidated";
+    entry.driftReasons = uniqueStrings([...(entry.driftReasons ?? []), "invalidated"]);
     invalidatedEntries.push(cloneJsonCompatible(entry));
   }
 
@@ -174,36 +191,61 @@ export async function applyMemoryUpdate(layout, memoryUpdate, sourceMeta = {}) {
   const globalKnowledge = await loadKnowledge(layout, "global");
   const projectKnowledge = await loadKnowledge(layout, "project");
 
-  const globalEntries = [...(globalKnowledge.entries ?? [])];
-  const projectEntries = [...(projectKnowledge.entries ?? [])];
+  const globalEntries = decayKnowledgeEntries(globalKnowledge.entries ?? []);
+  const projectEntries = decayKnowledgeEntries(projectKnowledge.entries ?? []);
+  const existingEntries = [...globalEntries, ...projectEntries].map((entry) => enrichKnowledgeEntry(entry));
   const addedEntries = [];
 
   for (const entry of normalized.entries) {
-    const targetEntries = entry.scope === "global" ? globalEntries : projectEntries;
-    targetEntries.push(entry);
-    addedEntries.push(cloneJsonCompatible(entry));
+    const enrichedEntry = enrichKnowledgeEntry(entry);
+    const targetEntries = enrichedEntry.scope === "global" ? globalEntries : projectEntries;
+    targetEntries.push(enrichedEntry);
+    addedEntries.push(cloneJsonCompatible(enrichedEntry));
   }
 
   const addedEntryIds = addedEntries.map((entry) => entry.id);
+  const automaticInvalidations = deriveAutomaticInvalidations(addedEntries, existingEntries);
+  const resolvedInvalidations = [...normalized.invalidations, ...automaticInvalidations];
 
   const invalidatedEntries = [
-    ...applyInvalidations(globalEntries, normalized.invalidations, addedEntryIds),
-    ...applyInvalidations(projectEntries, normalized.invalidations, addedEntryIds)
+    ...applyInvalidations(globalEntries, resolvedInvalidations, addedEntryIds),
+    ...applyInvalidations(projectEntries, resolvedInvalidations, addedEntryIds)
   ];
 
-  await writeKnowledge(layout, "global", { entries: globalEntries });
-  await writeKnowledge(layout, "project", { entries: projectEntries });
+  const finalGlobalEntries = annotateKnowledgeDrift(globalEntries);
+  const finalProjectEntries = annotateKnowledgeDrift(projectEntries);
+
+  await writeKnowledge(layout, "global", { entries: finalGlobalEntries });
+  await writeKnowledge(layout, "project", { entries: finalProjectEntries });
+  const graphSummary = await updateKnowledgeGraph(layout, {
+    existingEntries,
+    addedEntries,
+    invalidatedEntries,
+    conflicts: []
+  });
 
   return {
     addedEntries,
     invalidatedEntries,
-    invalidations: normalized.invalidations
+    invalidations: resolvedInvalidations,
+    graphSummary
   };
 }
 
 export function selectKnowledgeEntries(entries, type, limit = 5) {
   return entries
     .filter((entry) => entry.type === type && entry.status === "active")
-    .sort((left, right) => String(right.updatedAt).localeCompare(String(left.updatedAt)))
+    .sort((left, right) => {
+      const scoreDelta = Number(right.score ?? 1) - Number(left.score ?? 1);
+      if (scoreDelta !== 0) {
+        return scoreDelta;
+      }
+
+      return String(right.updatedAt).localeCompare(String(left.updatedAt));
+    })
     .slice(0, limit);
+}
+
+export function getForbiddenKnowledge(entries, options = {}) {
+  return buildForbiddenList(entries, options);
 }

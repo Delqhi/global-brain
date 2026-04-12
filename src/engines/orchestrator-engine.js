@@ -23,7 +23,7 @@ import {
   loadSessionSummary,
   writeSessionSummary
 } from "./session-engine.js";
-import { syncProjectBrain } from "./sync-engine.js";
+import { bidirectionalSync } from "./bidi-sync-engine.js";
 
 export async function runOrchestration({
   rootDir = process.cwd(),
@@ -151,7 +151,8 @@ export async function runOrchestration({
     messages,
     plan: planAfter,
     memoryChanges: mergedMemoryChanges,
-    reflectionSummary: reflection?.summary ?? null
+    reflectionSummary: reflection?.summary ?? null,
+    reflection
   });
 
   await writeSessionSummary(layout, sessionId, sessionSummary);
@@ -169,7 +170,7 @@ export async function runOrchestration({
     context: contextAfter
   });
 
-  const localProjectBrain = await syncProjectBrain({
+  const localProjectBrain = await bidirectionalSync({
     projectRoot,
     context: contextAfter,
     plan: planAfter,
@@ -185,6 +186,7 @@ export async function runOrchestration({
     planAfter,
     executionResult: resolvedExecution,
     reflection,
+    graphSummary: reflectionMemoryChanges.graphSummary ?? initialMemoryChanges.graphSummary ?? null,
     sessionSummary,
     contextBefore,
     contextAfter,

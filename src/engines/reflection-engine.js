@@ -25,6 +25,8 @@ export function buildReflectionPrompt({ task, executionResult, planBefore, planA
     JSON.stringify(
       {
         summary: "brief reflection summary",
+        qualityScore: 0.82,
+        suggestions: ["specific next improvement"],
         memoryUpdate: {
           facts: ["validated fact"],
           mistakes: ["repeatable mistake to avoid"],
@@ -47,17 +49,30 @@ export function buildReflectionPrompt({ task, executionResult, planBefore, planA
 function buildFallbackReflection({ task, executionResult, planBefore, planAfter }) {
   const strategyChanged = planBefore.strategy !== planAfter.strategy;
   const facts = [`Latest result summary: ${executionResult.resultSummary}`];
+  const mistakes = [];
   const rules = [];
+  const suggestions = [];
+  let qualityScore = 0.72;
+
+  if (/error|failed|exception|timeout/iu.test(executionResult.resultSummary)) {
+    mistakes.push(`Execution encountered a potential failure signal: ${executionResult.resultSummary}`);
+    suggestions.push("Add stronger validation before reusing this strategy.");
+    qualityScore = 0.42;
+  }
 
   if (strategyChanged) {
     facts.push(`Strategy changed from ${planBefore.strategy} to ${planAfter.strategy}.`);
     rules.push("When strategy changes, invalidate the superseded strategy before the next run.");
+    suggestions.push("Review whether earlier strategy-specific steps should be invalidated.");
   }
 
   return {
     summary: `Fallback reflection completed for task: ${task}`,
+    qualityScore,
+    suggestions,
     memoryUpdate: {
       facts,
+      mistakes,
       rules
     }
   };
@@ -83,6 +98,8 @@ export async function reflectExecution({
 
     return {
       summary: response.summary ?? `Reflection completed for task: ${task}`,
+      qualityScore: Number.isFinite(Number(response.qualityScore)) ? Number(response.qualityScore) : 0.75,
+      suggestions: Array.isArray(response.suggestions) ? response.suggestions.map(String) : [],
       memoryUpdate: validateExecutionResult({
         resultSummary: "reflection-wrapper",
         planUpdate: {},

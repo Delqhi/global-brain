@@ -10,7 +10,7 @@ import { ensureGoal } from "./engines/goal-engine.js";
 import { setupProjectHooks, detectExistingHooks } from "./engines/hook-engine.js";
 import { loadMergedKnowledge } from "./engines/memory-engine.js";
 import { runOrchestration } from "./engines/orchestrator-engine.js";
-import { loadLatestPlan } from "./engines/plan-engine.js";
+import { buildInitialPlan, loadLatestPlan, savePlanVersion } from "./engines/plan-engine.js";
 import { appendSessionMessage, loadSessionSummary } from "./engines/session-engine.js";
 import { extractAndApplyTranscriptKnowledge } from "./engines/transcript-engine.js";
 
@@ -166,7 +166,18 @@ async function run() {
     const goalId = options["goal-id"] ?? "default-goal";
     const goalDescription = options.description ?? "Continue development";
     const goal = await ensureGoal(layout, { goalId, description: goalDescription });
-    const plan = await loadLatestPlan(layout, goal.id);
+    let plan = await loadLatestPlan(layout, goal.id);
+
+    if (!plan) {
+      plan = buildInitialPlan({
+        projectId: layout.projectId,
+        goalId: goal.id,
+        goalDescription,
+        constraints: []
+      });
+      await savePlanVersion(layout, plan);
+    }
+
     const knowledge = await loadMergedKnowledge(layout);
     const sessionSummary = await loadSessionSummary(layout, options.session ?? "default-session");
     const context = buildActiveContext({ goal, plan, knowledge, sessionSummary });

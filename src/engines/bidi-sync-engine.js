@@ -10,10 +10,12 @@ import {
   cloneJsonCompatible,
   fileExists,
   readJsonFile,
+  uniqueStrings,
   writeJsonFile
 } from "../lib/storage.js";
+import { buildConflictCandidates, chooseConflictWinner } from "./invalidation-engine.js";
 import { loadKnowledge } from "./memory-engine.js";
-import { summarizePlan } from "./plan-engine.js";
+import { updateKnowledgeGraph } from "./knowledge-graph-engine.js";
 
 // Deduplication: check if an entry with the same text already exists
 // in the target store (regardless of id). Prevents double-imports
@@ -33,11 +35,45 @@ function entryExistsInStore(entries, candidate) {
 function mergeKnowledgeEntries(existingEntries, incomingEntries) {
   const imported = [];
   const skipped = [];
+  const conflicts = [];
+  const invalidatedEntries = [];
   const now = new Date().toISOString();
 
   for (const entry of incomingEntries) {
     if (!entry || !entry.text || entry.status !== "active") {
       continue;
+    }
+
+    const conflictCandidate = buildConflictCandidates(existingEntries, [entry])[0] ?? null;
+
+    if (conflictCandidate) {
+      const resolution = chooseConflictWinner(conflictCandidate.existingEntry, conflictCandidate.incomingEntry);
+      conflicts.push({
+        scope: entry.scope ?? "project",
+        topic: entry.topic ?? null,
+        type: entry.type,
+        existingId: conflictCandidate.existingEntry.id,
+        incomingId: conflictCandidate.incomingEntry.id,
+        resolution,
+        existingText: conflictCandidate.existingEntry.text,
+        incomingText: conflictCandidate.incomingEntry.text
+      });
+
+      if (resolution === "existing") {
+        skipped.push({ id: entry.id, text: entry.text, reason: "conflict-lost" });
+        continue;
+      }
+
+      conflictCandidate.existingEntry.status = "invalidated";
+      conflictCandidate.existingEntry.score = 0;
+      conflictCandidate.existingEntry.updatedAt = now;
+      conflictCandidate.existingEntry.invalidatedAt = now;
+      conflictCandidate.existingEntry.invalidatedBy = uniqueStrings([
+        ...(conflictCandidate.existingEntry.invalidatedBy ?? []),
+        entry.id
+      ]);
+      conflictCandidate.existingEntry.invalidationReason = `Superseded during sync conflict resolution by ${entry.id}`;
+      invalidatedEntries.push(cloneJsonCompatible(conflictCandidate.existingEntry));
     }
 
     if (entryExistsInStore(existingEntries, entry)) {
@@ -53,7 +89,7 @@ function mergeKnowledgeEntries(existingEntries, incomingEntries) {
     imported.push(importedEntry);
   }
 
-  return { imported, skipped };
+  return { imported, skipped, conflicts, invalidatedEntries };
 }
 
 // Pull knowledge from a project's .pcpm/ directory back into the global brain.
@@ -79,6 +115,7 @@ export async function pullFromProjectBrain({ projectRoot, repositoryLayout }) {
 
   const projectKnowledgeSummary = await readJsonFile(knowledgeSummaryPath, { entries: [] });
   const incomingEntries = projectKnowledgeSummary.entries ?? [];
+  const localBrain = await createProjectBrainLayout(projectRoot);
 
   if (incomingEntries.length === 0) {
     return { status: "skipped", reason: "no entries in project knowledge summary" };
@@ -109,6 +146,27 @@ export async function pullFromProjectBrain({ projectRoot, repositoryLayout }) {
     await writeJsonFile(repositoryLayout.projectKnowledgeFile, { entries: projectEntries });
   }
 
+  const conflicts = [...globalResult.conflicts, ...projectResult.conflicts];
+  const invalidatedEntries = [...globalResult.invalidatedEntries, ...projectResult.invalidatedEntries];
+
+  if (globalResult.imported.length > 0 || projectResult.imported.length > 0 || conflicts.length > 0) {
+    await updateKnowledgeGraph(repositoryLayout, {
+      existingEntries: [...globalEntries, ...projectEntries],
+      addedEntries: [...globalResult.imported, ...projectResult.imported],
+      invalidatedEntries,
+      conflicts
+    });
+  }
+
+  await writeJsonFile(repositoryLayout.projectSyncConflictFile, {
+    updatedAt: new Date().toISOString(),
+    conflicts
+  });
+  await writeJsonFile(localBrain.syncConflictFile, {
+    updatedAt: new Date().toISOString(),
+    conflicts
+  });
+
   return {
     status: "completed",
     globalImported: globalResult.imported.length,
@@ -116,7 +174,9 @@ export async function pullFromProjectBrain({ projectRoot, repositoryLayout }) {
     projectImported: projectResult.imported.length,
     projectSkipped: projectResult.skipped.length,
     importedEntries: [...globalResult.imported, ...projectResult.imported],
-    skippedEntries: [...globalResult.skipped, ...projectResult.skipped]
+    skippedEntries: [...globalResult.skipped, ...projectResult.skipped],
+    conflicts,
+    invalidatedEntries
   };
 }
 

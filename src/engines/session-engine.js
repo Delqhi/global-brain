@@ -55,7 +55,8 @@ export function buildSessionSummary({
   messages,
   plan,
   memoryChanges,
-  reflectionSummary = null
+  reflectionSummary = null,
+  reflection = null
 }) {
   const lastUserMessage = [...messages].reverse().find((message) => message.role === "user")?.text ?? null;
   const lastAssistantMessage = [...messages].reverse().find((message) => message.role === "assistant")?.text ?? null;
@@ -71,7 +72,9 @@ export function buildSessionSummary({
     openIssueCount: (plan.issues ?? []).filter((issue) => issue.status !== "resolved").length,
     invalidatedEntries: memoryChanges.invalidatedEntries.map((entry) => entry.text),
     addedKnowledge: memoryChanges.addedEntries.map((entry) => entry.text),
-    reflectionSummary,
+    reflectionSummary: reflection?.summary ?? reflectionSummary,
+    reflectionQualityScore: reflection?.qualityScore ?? null,
+    reflectionSuggestions: Array.isArray(reflection?.suggestions) ? reflection.suggestions : [],
     updatedAt: new Date().toISOString()
   };
 }

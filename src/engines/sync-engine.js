@@ -3,7 +3,23 @@ import { loadKnowledge } from "./memory-engine.js";
 import { summarizePlan } from "./plan-engine.js";
 import { writeJsonFile } from "../lib/storage.js";
 
-export async function syncProjectBrain({ projectRoot, context, plan, sessionSummary, repositoryLayout }) {
+function buildPlanSnapshot(plan, context) {
+  if (plan) {
+    return summarizePlan(plan);
+  }
+
+  return {
+    goalId: context?.goal?.id ?? null,
+    revision: null,
+    status: null,
+    strategy: null,
+    openSteps: [],
+    latestDecisions: [],
+    openIssues: []
+  };
+}
+
+export async function syncProjectBrain({ projectRoot, context, plan, sessionSummary, syncConflicts = null, repositoryLayout }) {
   if (!projectRoot) {
     return null;
   }
@@ -28,10 +44,17 @@ export async function syncProjectBrain({ projectRoot, context, plan, sessionSumm
     entries: mergedEntries
   });
 
-  await writeJsonFile(localBrain.latestPlanFile, summarizePlan(plan));
+  await writeJsonFile(localBrain.latestPlanFile, buildPlanSnapshot(plan, context));
 
   if (sessionSummary) {
     await writeJsonFile(localBrain.sessionSummaryFile, sessionSummary);
+  }
+
+  if (syncConflicts) {
+    await writeJsonFile(localBrain.syncConflictFile, {
+      updatedAt: new Date().toISOString(),
+      conflicts: syncConflicts
+    });
   }
 
   return localBrain;

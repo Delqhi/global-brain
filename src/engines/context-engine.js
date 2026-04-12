@@ -1,4 +1,4 @@
-import { selectKnowledgeEntries } from "./memory-engine.js";
+import { getForbiddenKnowledge, selectKnowledgeEntries } from "./memory-engine.js";
 import { summarizePlan } from "./plan-engine.js";
 
 export function buildActiveContext({ goal, plan, knowledge, sessionSummary }) {
@@ -19,7 +19,8 @@ export function buildActiveContext({ goal, plan, knowledge, sessionSummary }) {
       mistakes: selectKnowledgeEntries(activeKnowledge, "mistake", 8),
       solutions: selectKnowledgeEntries(activeKnowledge, "solution", 8),
       facts: selectKnowledgeEntries(activeKnowledge, "fact", 8),
-      forbidden: selectKnowledgeEntries(activeKnowledge, "forbidden", 8)
+      forbidden: getForbiddenKnowledge(activeKnowledge, { scope: "project" }).slice(0, 8),
+      drifting: activeKnowledge.filter((entry) => entry.driftStatus === "watch" || entry.driftStatus === "stale").slice(0, 8)
     },
     session: sessionSummary
       ? {

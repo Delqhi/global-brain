@@ -23,6 +23,7 @@ export async function createRepositoryLayout({ rootDir = process.cwd(), projectI
     projectId: safeProjectId,
     projectRoot,
     globalKnowledgeFile: path.join(globalRoot, "knowledge.json"),
+    globalKnowledgeGraphFile: path.join(globalRoot, "knowledge-graph.json"),
     globalSessionAggregateFile: path.join(globalRoot, "session-summary.json"),
     projectGoalsDir: path.join(projectRoot, "goals"),
     projectPlansDir: path.join(projectRoot, "plans"),
@@ -30,8 +31,10 @@ export async function createRepositoryLayout({ rootDir = process.cwd(), projectI
     projectSessionsDir: path.join(projectRoot, "sessions"),
     projectContextDir: path.join(projectRoot, "context"),
     projectKnowledgeFile: path.join(projectRoot, "memory", "knowledge.json"),
+    projectKnowledgeGraphFile: path.join(projectRoot, "memory", "knowledge-graph.json"),
     projectSessionAggregateFile: path.join(projectRoot, "sessions", "project-summary.json"),
-    projectActiveContextFile: path.join(projectRoot, "context", "active-context.json")
+    projectActiveContextFile: path.join(projectRoot, "context", "active-context.json"),
+    projectSyncConflictFile: path.join(projectRoot, "context", "sync-conflicts.json")
   };
 
   await ensureDir(globalRoot);
@@ -44,8 +47,10 @@ export async function createRepositoryLayout({ rootDir = process.cwd(), projectI
   await ensureDir(layout.projectContextDir);
 
   await ensureBaselineJson(layout.globalKnowledgeFile, { entries: [] });
+  await ensureBaselineJson(layout.globalKnowledgeGraphFile, { nodes: [], edges: [], updatedAt: null });
   await ensureBaselineJson(layout.globalSessionAggregateFile, { projects: [] });
   await ensureBaselineJson(layout.projectKnowledgeFile, { entries: [] });
+  await ensureBaselineJson(layout.projectKnowledgeGraphFile, { nodes: [], edges: [], updatedAt: null });
   await ensureBaselineJson(layout.projectSessionAggregateFile, {
     projectId: safeProjectId,
     sessions: []
@@ -53,6 +58,10 @@ export async function createRepositoryLayout({ rootDir = process.cwd(), projectI
   await ensureBaselineJson(layout.projectActiveContextFile, {
     generatedAt: null,
     context: null
+  });
+  await ensureBaselineJson(layout.projectSyncConflictFile, {
+    updatedAt: null,
+    conflicts: []
   });
 
   return layout;
@@ -94,13 +103,17 @@ export async function createProjectBrainLayout(projectRoot) {
     contextFile: path.join(localRoot, "active-context.json"),
     knowledgeSummaryFile: path.join(localRoot, "knowledge-summary.json"),
     latestPlanFile: path.join(localRoot, "plan", "latest.json"),
-    sessionSummaryFile: path.join(localRoot, "sessions", "latest-summary.json")
+    sessionSummaryFile: path.join(localRoot, "sessions", "latest-summary.json"),
+    syncConflictFile: path.join(localRoot, "sync-conflicts.json")
   };
 
   await ensureDir(path.join(localRoot, "plan"));
   await ensureDir(path.join(localRoot, "sessions"));
   await ensureBaselineJson(layout.contextFile, { generatedAt: null, context: null });
   await ensureBaselineJson(layout.knowledgeSummaryFile, { generatedAt: null, entries: [] });
+  await ensureBaselineJson(layout.latestPlanFile, { goalId: null, revision: null, status: null, strategy: null, openSteps: [], latestDecisions: [], openIssues: [] });
+  await ensureBaselineJson(layout.sessionSummaryFile, { sessionId: null, projectId: null, goalId: null, messageCount: 0, lastUserMessage: null, lastAssistantMessage: null, currentStrategy: null, openIssueCount: 0, invalidatedEntries: [], addedKnowledge: [], reflectionSummary: null, reflectionQualityScore: null, reflectionSuggestions: [], updatedAt: null });
+  await ensureBaselineJson(layout.syncConflictFile, { updatedAt: null, conflicts: [] });
 
   return layout;
 }

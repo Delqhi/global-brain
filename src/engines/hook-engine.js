@@ -113,6 +113,28 @@ function generateOpenCodeConfig({ brainRepoPath, projectId, goalId, goalDescript
   };
 }
 
+async function mergeIntoProjectOpenCodeConfig(projectRoot, generatedConfig) {
+  const configPath = path.join(projectRoot, ".opencode", "opencode.json");
+  const existingConfig = await readJsonFile(configPath, {});
+  const mergedConfig = {
+    ...existingConfig,
+    hooks: {
+      ...(existingConfig.hooks ?? {}),
+      ...(generatedConfig.hooks ?? {})
+    },
+    pcpm: {
+      ...(existingConfig.pcpm ?? {}),
+      ...(generatedConfig.pcpm ?? {})
+    }
+  };
+
+  await writeJsonFile(configPath, mergedConfig);
+  return {
+    configPath,
+    config: mergedConfig
+  };
+}
+
 // Generate an AGENTS.md snippet that instructs agents to use PCPM context.
 // This gets injected into the project's AGENTS.md to enforce brain usage.
 function generateAgentsDirective({ projectId, goalDescription }) {
@@ -187,6 +209,7 @@ export async function setupProjectHooks({
     hooksDir
   });
   await writeJsonFile(configPath, config);
+  const mergedProjectConfig = await mergeIntoProjectOpenCodeConfig(projectRoot, config);
 
   // Optionally write an AGENTS.md directive for the project
   let agentsDirectivePath = null;
@@ -201,14 +224,22 @@ export async function setupProjectHooks({
     beforeRunScript: beforeRunPath,
     afterRunScript: afterRunPath,
     configFile: configPath,
+    opencodeConfigFile: mergedProjectConfig.configPath,
     agentsDirective: agentsDirectivePath,
-    config
+    config,
+    mergedProjectConfig: mergedProjectConfig.config
   };
 }
 
 // Check if a project already has PCPM hooks set up.
 // Returns the current config if found, null otherwise.
 export async function detectExistingHooks(projectRoot) {
+  const projectConfigPath = path.join(projectRoot, ".opencode", "opencode.json");
+
+  if (await fileExists(projectConfigPath)) {
+    return readJsonFile(projectConfigPath, null);
+  }
+
   const configPath = path.join(projectRoot, ".opencode", "pcpm-config.json");
 
   if (!(await fileExists(configPath))) {

@@ -2,7 +2,7 @@ export { createRepositoryLayout, createProjectBrainLayout } from "./lib/layout.j
 export { runOrchestration } from "./engines/orchestrator-engine.js";
 export { buildInitialPlan, applyPlanUpdate, loadLatestPlan, savePlanVersion } from "./engines/plan-engine.js";
 export { ensureGoal, loadGoal } from "./engines/goal-engine.js";
-export { loadMergedKnowledge, applyMemoryUpdate } from "./engines/memory-engine.js";
+export { loadMergedKnowledge, applyMemoryUpdate, getForbiddenKnowledge } from "./engines/memory-engine.js";
 export {
   appendSessionMessage,
   loadSessionMessages,
@@ -12,3 +12,18 @@ export {
 export { extractKnowledgeFromMessages, extractAndApplyTranscriptKnowledge } from "./engines/transcript-engine.js";
 export { pullFromProjectBrain, bidirectionalSync } from "./engines/bidi-sync-engine.js";
 export { setupProjectHooks, detectExistingHooks } from "./engines/hook-engine.js";
+export {
+  annotateKnowledgeDrift,
+  buildConflictCandidates,
+  buildForbiddenList,
+  chooseConflictWinner,
+  decayKnowledgeEntries,
+  deriveAutomaticInvalidations,
+  enrichKnowledgeEntry
+} from "./engines/invalidation-engine.js";
+export {
+  getRelatedKnowledge,
+  loadKnowledgeGraph,
+  summarizeKnowledgeGraph,
+  updateKnowledgeGraph
+} from "./engines/knowledge-graph-engine.js";
