@@ -19,6 +19,16 @@
       "status": "active",
       "score": 1,
       "updatedAt": "2026-04-12T11:28:32.310Z"
+    },
+    {
+      "id": "rule-7d8f3d5f-5a6e-4cdb-97db-8a7e0dcf4d90",
+      "type": "rule",
+      "scope": "global",
+      "topic": "create-flow-canonical-runtime",
+      "text": "All future create-flow based automation must inherit from OpenSIN-AI/SIN-InkogniFlow as the canonical runtime; do not build divergent flow runtimes outside that base.",
+      "status": "active",
+      "score": 1,
+      "updatedAt": "2026-04-13T02:32:00.000Z"
     }
   ],
   "edges": [
@@ -31,5 +41,5 @@
       "updatedAt": "2026-04-12T11:28:32.317Z"
     }
   ],
-  "updatedAt": "2026-04-12T11:28:32.317Z"
+  "updatedAt": "2026-04-13T02:32:00.000Z"
 }

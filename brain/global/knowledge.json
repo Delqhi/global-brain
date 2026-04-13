@@ -51,6 +51,32 @@
       "driftReasons": [],
       "lastValidatedAt": "2026-04-12T11:28:32.310Z",
       "ageDays": 0
+    },
+    {
+      "id": "rule-7d8f3d5f-5a6e-4cdb-97db-8a7e0dcf4d90",
+      "type": "rule",
+      "text": "All future create-flow based automation must inherit from OpenSIN-AI/SIN-InkogniFlow as the canonical runtime; do not build divergent flow runtimes outside that base.",
+      "topic": "create-flow-canonical-runtime",
+      "status": "active",
+      "scope": "global",
+      "score": 1,
+      "tags": ["create-flow", "SIN-InkogniFlow", "canonical"],
+      "source": {
+        "projectId": "opensin-flow-stack",
+        "goalId": "canonicalize-create-flow",
+        "sessionId": "session-20260413-create-flow-canonical",
+        "sourceType": "execution"
+      },
+      "rationale": "Prevents agent drift and incompatible flow implementations across repos.",
+      "createdAt": "2026-04-13T02:32:00.000Z",
+      "updatedAt": "2026-04-13T02:32:00.000Z",
+      "invalidatedBy": [],
+      "invalidates": [],
+      "replacesTopic": false,
+      "driftStatus": "fresh",
+      "driftReasons": [],
+      "lastValidatedAt": "2026-04-13T02:32:00.000Z",
+      "ageDays": 0
     }
   ]
 }
