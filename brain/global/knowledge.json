@@ -77,6 +77,32 @@
       "driftReasons": [],
       "lastValidatedAt": "2026-04-13T02:32:00.000Z",
       "ageDays": 0
+    },
+    {
+      "id": "rule-dl9a2c4f-8b3e-4d1a-a5f6-1c7e3db82f01",
+      "type": "rule",
+      "text": "SIN-InkogniFlow Dual-Logger is the canonical human-to-agent recording system: all workflow recording must use sin-flow record-dual (OS logger via pynput + browser logger via JS injection → Flask merge server on :5000 → agent_workflow_master.json). Replay must use sin-flow replay with Bézier mouse curves, Gaussian jitter, and CDP/pyautogui/hybrid modes. Never build alternative recording pipelines.",
+      "topic": "dual-logger-architecture",
+      "status": "active",
+      "scope": "global",
+      "score": 1,
+      "tags": ["Dual-Logger", "SIN-InkogniFlow", "create-flow", "recording", "anti-bot", "Bézier-curve", "pynput", "CDP"],
+      "source": {
+        "projectId": "SIN-InkogniFlow",
+        "goalId": "dual-logger-architecture",
+        "sessionId": "session-20260413-dual-logger-build",
+        "sourceType": "execution"
+      },
+      "rationale": "Provides structured machine-readable JSON workflow logs that combine OS-level and browser-level events with anti-bot replay countermeasures.",
+      "createdAt": "2026-04-13T13:00:00.000Z",
+      "updatedAt": "2026-04-13T13:00:00.000Z",
+      "invalidatedBy": [],
+      "invalidates": [],
+      "replacesTopic": false,
+      "driftStatus": "fresh",
+      "driftReasons": [],
+      "lastValidatedAt": "2026-04-13T13:00:00.000Z",
+      "ageDays": 0
     }
   ]
 }
