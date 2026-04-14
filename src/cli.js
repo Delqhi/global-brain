@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { appendFileSync, existsSync, mkdirSync } from "node:fs";
 
 import { createRepositoryLayout } from "./lib/layout.js";
@@ -55,7 +56,7 @@ function printJson(data) {
 
 async function run() {
   const { command, options } = parseArguments(process.argv.slice(2));
-  const rootDir = options.root ? path.resolve(options.root) : process.cwd();
+  const rootDir = options.root ? path.resolve(options.root) : path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
   if (command === "help") {
     printJson({
