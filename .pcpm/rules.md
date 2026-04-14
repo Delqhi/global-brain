@@ -1,5 +1,8 @@
 # Project Rules
 
+## 🚨 CRITICAL ARCHITECTURE RULES
+- [2026-04-14T16:00:00Z] KEINE CI/CD GITHUB ACTIONS! Wir nutzen AUSSCHLIESSLICH A2A-SIN-GitHub-Action + n8n für alle CI/CD, Deployment, Automation Tasks. GitHub Actions sind PERMANENT VERBOTEN. (priority: -10.0)
+
 ## Global Rules (synced from AGENTS.md)
 - [2026-04-13T14:00:00Z] VISUAL ARTIFACT HANDLING: Agents MUST open images in macOS Preview.app via 'open -a Preview'. Never tell users to look in /tmp. (priority: -4.5)
 - [2026-04-13T14:00:00Z] SIN-BRAIN AUTO-SYNC: After every chat turn, the global brain is automatically synchronized via sync-chat-turn hook. (priority: -4.0)

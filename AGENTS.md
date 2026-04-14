@@ -1,3 +1,30 @@
+# 🚨 ABSOLUTES CI/CD VERBOT — KEINE GITHUB ACTIONS (PRIORITY -10.0 — HÖCHSTE REGEL, KEINE AUSNAHMEN) 🚨
+
+**ABSOLUTES VERBOT: KEINE GITHUB ACTIONS FÜR CI/CD, DEPLOYMENT ODER AUTOMATION!**
+
+**1. DAS PRINZIP:**
+- OpenSIN-AI nutzt **AUSSCHLIESSLICH A2A-SIN-GitHub-Action + n8n** für alle CI/CD, Deployment, Build, Test und Automation Tasks.
+- GitHub Actions Workflows (`.github/workflows/*.yml`) sind **PERMANENT VERBOTEN**.
+- **NIEMALS** darf ein Agent GitHub Actions erstellen, empfehlen, konfigurieren oder vorschlagen.
+- Der n8n-Router auf der OCI VM (`92.5.60.87:5678`) ist unser zentrales Automation-Backend.
+- A2A-SIN-GitHub-Action ist unser GitHub Event Listener und n8n Bridge.
+
+**2. WARUM KEINE GITHUB ACTIONS:**
+- Wir haben eine EIGENE Lösung gebaut (A2A-SIN-GitHub-Action + n8n).
+- Diese Lösung ist tiefer integriert, flexibler und Teil unseres A2A Ökosystems.
+- GitHub Actions wären eine redundante, parallele Infrastruktur die wir NICHT brauchen.
+
+**3. WENN AGENTEN CI/CD BRAUCHEN:**
+- Erstelle GitHub Issues → A2A-SIN-GitHub-Action triggert n8n Workflow
+- Nutze `sin-n8n` CLI für lokale Workflow-Verwaltung
+- Alle Automation läuft über n8n, NICHT über GitHub Actions
+
+**4. KONSEQUENZEN:**
+- Wer GitHub Actions erstellt oder vorschlägt: **Protokollverstoß**
+- Diese Regel steht HIER und im Global Brain `.pcpm/rules.md` — sie ist UNÜBERSEHBAR
+
+---
+
 # AGENTS.md — global-brain
 
 ## Purpose
