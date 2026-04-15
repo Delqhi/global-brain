@@ -101,8 +101,60 @@
       "replacesTopic": false,
       "driftStatus": "fresh",
       "driftReasons": [],
-      "lastValidatedAt": "2026-04-13T13:00:00.000Z",
-      "ageDays": 0
-    }
-  ]
+"lastValidatedAt": "2026-04-13T13:00:00.000Z",
+    "ageDays": 0
+  },
+  {
+    "id": "rule-20260415-opensin-documentation-001",
+    "type": "rule",
+    "text": "NIEMALS ANNAHMEN MACHEN! IMMER FAKTISCH ZÄHLEN! Vorher: Behauptet 5 Plugins, 11 Provider, 29 Skills. Realität: 4 Plugins, 5 Provider, 44 Skills.",
+    "topic": "fact-checking-before-claiming",
+    "status": "active",
+    "scope": "global",
+    "score": 1,
+    "tags": ["facts", "no-assumptions", "count-first"],
+    "source": {
+      "projectId": "opensin-documentation",
+      "goalId": "box-storage-improve",
+      "sessionId": "session-20260415-opensin-documentation",
+      "sourceType": "execution"
+    },
+    "rationale": "Ich habe gelogen! Alle Zahlen müssen VORHER gezählt werden, nicht angenommen.",
+    "createdAt": "2026-04-15T16:30:00.000Z",
+    "updatedAt": "2026-04-15T16:30:00.000Z",
+    "invalidatedBy": [],
+    "invalidates": [],
+    "replacesTopic": false,
+    "driftStatus": "fresh",
+    "driftReasons": [],
+    "lastValidatedAt": "2026-04-15T16:30:00.000Z",
+    "ageDays": 0
+  },
+  {
+    "id": "rule-20260415-box-storage-verified",
+    "type": "rule",
+    "text": "Box.com Storage API funktioniert! Token: f9PURW50E47k9dwoVKkBD64QLJLnC4Nx. Public Folder: 376915767916, Cache: 376701205578. API nutzt NUMERISCHE IDs, NICHT Share-Links!",
+    "topic": "box-storage-verified",
+    "status": "active",
+    "scope": "global",
+    "score": 1,
+    "tags": ["box.com", "storage", "API", "verified"],
+    "source": {
+      "projectId": "opensin-documentation",
+      "goalId": "box-storage-improve",
+      "sessionId": "session-20260415-opensin-documentation",
+      "sourceType": "execution"
+    },
+    "rationale": "Box.com API funktioniert einwandfrei via curl. Dokumentation in box-storage.md verbessert.",
+    "createdAt": "2026-04-15T16:30:00.000Z",
+    "updatedAt": "2026-04-15T16:30:00.000Z",
+    "invalidatedBy": [],
+    "invalidates": [],
+    "replacesTopic": false,
+    "driftStatus": "fresh",
+    "driftReasons": [],
+    "lastValidatedAt": "2026-04-15T16:30:00.000Z",
+    "ageDays": 0
+  }
+]
 }
