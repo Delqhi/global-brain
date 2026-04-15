@@ -89,3 +89,40 @@
 6. **Chrome Password Manager Integration in Agents implementieren**
    - Alle Agenten sollen Chrome-Passwörter automatisch VOR Nutzung prüfen
    - Credentials in sin-passwordmanager speichern
+
+## 2026-04-16: Infra-SIN-Docker-Empire README Korrektur
+
+**Fehler gefunden und gefixt:**
+- **Titel sagte "26-Container" aber es waren nur 25!**
+- Fehlerhafte Container-Namen: agent-03-agentzero → agent-03-agentzero-orchestrator
+- Fehlerhafte Container-Namen: agent-11-evolution → agent-11-evolution-optimizer
+- Fehlerhafte Container-Namen: room-01-dashboard → room-01-dashboard-cockpit
+- 5 Container fehlten in den Tabellen komplett:
+  - cloudflared-tunnel (neue Sektion "Network & Security")
+  - builder-1-website-worker (neue Sektion "Builders")
+  - room-08-postiz-temporal
+  - room-09-firecrawl-scraper
+  - room-supabase-db
+- room-07-gitlab-storage war DEPRECATED und existierte nicht mehr
+
+**Repo:** OpenSIN-AI/Infra-SIN-Docker-Empire
+**Commit:** beb6601
+**Änderungen:**
+- 26-Container → 25-Container (korrekte Anzahl)
+- agent-03-agentzero-orchestrator (korrigiert)
+- agent-11-evolution-optimizer (korrigiert)
+- room-01-dashboard-cockpit (korrigiert)
+- Neue Sektion: Builders mit builder-1-website-worker
+- Neue Sektion: Network & Security mit cloudflared-tunnel
+- Rooms erweitert: +3 fehlende rooms
+- room-07-gitlab-storage entfernt (DEPRECATED)
+
+## Potentielle weitere Fehler gefunden
+
+**OpenSIN-Code README** (muss noch verifiziert werden):
+- "Chrome Extension mit 39 MCP Tools" - Anzahl verifizieren?
+- "13 actions, 7 browsers" - Anzahl verifizieren?
+
+**Weitere geprüfte Repos (keine Fehler gefunden):**
+- A2A-SIN-WhatsApp: README sieht korrekt aus
+- OpenSIN-Neural-Bus: README sieht korrekt aus
