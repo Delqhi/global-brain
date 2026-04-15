@@ -337,6 +337,32 @@
     "driftReasons": [],
     "lastValidatedAt": "2026-04-15T19:00:00.000Z",
     "ageDays": 0
+  },
+  {
+    "id": "rule-20260415-repo-audit-all-issues-created",
+    "type": "rule",
+    "text": "Alle OpenSIN Repos wurden auditiert. Issues erstellt für: OpenSIN-overview (#12), Template-A2A-SIN-Agent (#143), Marketing (#55), dev-setup (#19), OpenSIN-Code (#1093), OpenSIN-backend (#1157), OpenSIN Core (#1713). Hauptprobleme: npm→bun, veraltete Farben, alte Tools (GitLab, Playwright), fehlende Mandate.",
+    "topic": "repo-audit-2026-04-15",
+    "status": "active",
+    "scope": "global",
+    "score": 1,
+    "tags": ["audit", "repos", "issues", "update", "bun", "shopify-colors"],
+    "source": {
+      "projectId": "global-brain",
+      "goalId": "repo-audit",
+      "sessionId": "session-20260415-repo-audit",
+      "sourceType": "execution"
+    },
+    "rationale": "Viele Repos sind veraltet. Issues erstellt für systematische Updates.",
+    "createdAt": "2026-04-15T19:30:00.000Z",
+    "updatedAt": "2026-04-15T19:30:00.000Z",
+    "invalidatedBy": [],
+    "invalidates": [],
+    "replacesTopic": false,
+    "driftStatus": "fresh",
+    "driftReasons": [],
+    "lastValidatedAt": "2026-04-15T19:30:00.000Z",
+    "ageDays": 0
   }
 ]
 }
