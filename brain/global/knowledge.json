@@ -363,6 +363,32 @@
     "driftReasons": [],
     "lastValidatedAt": "2026-04-15T19:30:00.000Z",
     "ageDays": 0
+  },
+  {
+    "id": "rule-20260415-full-repo-audit",
+    "type": "rule",
+    "text": "VOLLSTÄNDIGES AUDIT ERGEBNIS (2026-04-15): package-lock.json=47 Dateien, npm install=654 Referenzen, verbotene Farben=91 (#10b981,#34d399,#3b82f6,#8b5cf6,#6366f1,#14b8a6), GitLab=99 Referenzen, Google API direkt=37. OpenSIN Core hat KEIN AGENTS.md. a2a.delqhi.com gibt 307 zurück. Alle anderen Sites OK.",
+    "topic": "full-repo-audit-2026-04-15",
+    "status": "active",
+    "scope": "global",
+    "score": 1,
+    "tags": ["audit", "compliance", "colors", "npm", "gitlab", "agents-md", "broken-links"],
+    "source": {
+      "projectId": "global-brain",
+      "goalId": "full-repo-audit",
+      "sessionId": "session-20260415-audit",
+      "sourceType": "execution"
+    },
+    "rationale": "Systematisches Audit aller OpenSIN Repos. Massive Verstöße gefunden.",
+    "createdAt": "2026-04-15T20:00:00.000Z",
+    "updatedAt": "2026-04-15T20:00:00.000Z",
+    "invalidatedBy": [],
+    "invalidates": [],
+    "replacesTopic": false,
+    "driftStatus": "fresh",
+    "driftReasons": [],
+    "lastValidatedAt": "2026-04-15T20:00:00.000Z",
+    "ageDays": 0
   }
 ]
 }
