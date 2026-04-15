@@ -155,6 +155,84 @@
     "driftReasons": [],
     "lastValidatedAt": "2026-04-15T16:30:00.000Z",
     "ageDays": 0
+  },
+  {
+    "id": "rule-20260415-cloudflare-pages-spa-routing",
+    "type": "rule",
+    "text": "Cloudflare Pages _redirects/_routes funktioniert NICHT für SPA Routing auf Custom Domains. Lösung: public/404.html = Kopie von index.html (React App). Cloudflare zeigt 404.html bei allen 404s, React Router handled client-side Routes. KEIN meta refresh redirect - der bricht React Router!",
+    "topic": "cloudflare-pages-spa",
+    "status": "active",
+    "scope": "global",
+    "score": 1,
+    "tags": ["cloudflare", "pages", "spa", "routing", "404", "react"],
+    "source": {
+      "projectId": "website-opensin.ai",
+      "goalId": "spa-routing-fix",
+      "sessionId": "session-20260415-spa-routing",
+      "sourceType": "execution"
+    },
+    "rationale": "SPA Routes wie /awesome-opensin-plugins gaben 404 weil _redirects nicht funktionierte. meta refresh hat URL geändert und React Router kaputt gemacht.",
+    "createdAt": "2026-04-15T17:00:00.000Z",
+    "updatedAt": "2026-04-15T17:00:00.000Z",
+    "invalidatedBy": [],
+    "invalidates": [],
+    "replacesTopic": false,
+    "driftStatus": "fresh",
+    "driftReasons": [],
+    "lastValidatedAt": "2026-04-15T17:00:00.000Z",
+    "ageDays": 0
+  },
+  {
+    "id": "rule-20260415-wrangler-deploy-to-production",
+    "type": "rule",
+    "text": "wrangler pages deploy [dir] --project-name [name] deployed AUTOMATISCH auf Production, nicht nur Preview! Kein separater promote-Befehl nötig. Die letzte Deployment ID in der Liste ist das aktive Production Deployment.",
+    "topic": "wrangler-pages-deploy",
+    "status": "active",
+    "scope": "global",
+    "score": 1,
+    "tags": ["cloudflare", "wrangler", "deploy", "production", "pages"],
+    "source": {
+      "projectId": "website-my.opensin.ai",
+      "goalId": "color-fix-deploy",
+      "sessionId": "session-20260415-wrangler-deploy",
+      "sourceType": "execution"
+    },
+    "rationale": "Ich dachte wrangler deploy geht nur zu Preview. Falsch! Es geht direkt auf Production.",
+    "createdAt": "2026-04-15T17:00:00.000Z",
+    "updatedAt": "2026-04-15T17:00:00.000Z",
+    "invalidatedBy": [],
+    "invalidates": [],
+    "replacesTopic": false,
+    "driftStatus": "fresh",
+    "driftReasons": [],
+    "lastValidatedAt": "2026-04-15T17:00:00.000Z",
+    "ageDays": 0
+  },
+  {
+    "id": "rule-20260415-opensin-websites-all-green",
+    "type": "rule",
+    "text": "opensin.ai UND my.opensin.ai haben jetzt Shopify-Farben (#008060, #00ff9e) und funktionierendes SPA Routing. Alle Routes geben HTTP 200. og-image.png funktioniert. ScrollToTop ist im Build.",
+    "topic": "opensin-websites-fixed",
+    "status": "active",
+    "scope": "global",
+    "score": 1,
+    "tags": ["opensin.ai", "my.opensin.ai", "shopify", "colors", "spa", "routing"],
+    "source": {
+      "projectId": "website-opensin.ai",
+      "goalId": "full-validation",
+      "sessionId": "session-20260415-full-fix",
+      "sourceType": "execution"
+    },
+    "rationale": "Beide Websites waren kaputt. Jetzt alles repariert und deployed.",
+    "createdAt": "2026-04-15T17:00:00.000Z",
+    "updatedAt": "2026-04-15T17:00:00.000Z",
+    "invalidatedBy": [],
+    "invalidates": [],
+    "replacesTopic": false,
+    "driftStatus": "fresh",
+    "driftReasons": [],
+    "lastValidatedAt": "2026-04-15T17:00:00.000Z",
+    "ageDays": 0
   }
 ]
 }
