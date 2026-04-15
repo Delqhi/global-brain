@@ -1,3 +1,27 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "id": "fact-20260415-discord-full-audit",
+      "type": "fact",
+      "text": "{\n  \"auditDate\": \"2026-04-15\",\n  \"botTokenValid\": true,\n  \"botUsername\": \"OpenSIN Bot\",\n  \"botId\": \"1489571871111385218\",\n  \"currentGuilds\": [\n    {\n      \"id\": \"1470046497797046314\",\n      \"name\": \"OpenSIN\",\n      \"channels\": [\n        \"Allgemein\",\n        \"guide-test\"\n      ]\n    }\n  ],\n  \"requiredServers\": [\n    {\n      \"name\": \"Money Maker\",\n      \"emoji\": \"💰\",\n      \"status\": \"MISSING\"\n    },\n    {\n      \"name\": \"Suggestions\",\n      \"emoji\": \"💡\",\n      \"status\": \"MISSING\"\n    },\n    {\n      \"name\": \"Updates\",\n      \"emoji\": \"🔄\",\n      \"status\": \"MISSING\"\n    },\n    {\n      \"name\": \"Use Cases\",\n      \"emoji\": \"📝\",\n      \"status\": \"MISSING\"\n    },\n    {\n      \"name\": \"Blog\",\n      \"emoji\": \"📰\",\n      \"status\": \"MISSING\"\n    }\n  ],\n  \"deploymentTargets\": {\n    \"hfSpace\": {\n      \"url\": \"https://huggingface.co/spaces/delqhi/sin-discord\",\n      \"status\": \"NOT_DEPLOYED\"\n    },\n    \"ociVm\": {\n      \"status\": \"NO_PROCESS_RUNNING\"\n    }\n  },\n  \"automation\": {\n    \"n8nWorkflows\": 0,\n    \"blogAutoPost\": \"NOT_CONFIGURED\"\n  },\n  \"blockers\": [\n    \"Discord server creation requires user OAuth (API limitation)\",\n    \"HF Space deployment requires HF_TOKEN authentication\",\n    \"n8n workflow creation requires N8N_API_KEY\"\n  ],\n  \"completedActions\": [\n    \"Fixed deprecated a2a.delqhi.com → chat.opensin.ai in agent.json\",\n    \"Verified Discord bot token validity via API\",\n    \"Added HF Space metadata to README.md\",\n    \"Added Discord environment variables to .env.example\",\n    \"Pushed changes to GitHub\"\n  ],\n  \"pendingActions\": [\n    \"User must create 4 additional Discord servers manually\",\n    \"User must provide HF_TOKEN for Space deployment\",\n    \"User must provide N8N_API_KEY for workflow creation\",\n    \"Deploy Discord bot to HF Space after auth provided\"\n  ]\n}",
+      "topic": "discord-infrastructure-full-audit",
+      "status": "active",
+      "scope": "global",
+      "score": 1,
+      "tags": [
+        "discord",
+        "audit",
+        "status",
+        "blockers"
+      ],
+      "source": {
+        "projectId": "opensin-documentation",
+        "goalId": "discord-infrastructure-setup",
+        "sessionId": "session-20260415-opensin-documentation",
+        "sourceType": "execution"
+      },
+      "createdAt": "2026-04-15T00:00:00.000Z",
+      "updatedAt": "2026-04-15T00:00:00.000Z"
+    }
+  ]
 }
