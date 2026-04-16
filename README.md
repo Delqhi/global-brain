@@ -21,7 +21,11 @@ AI coding agents (via OpenCode CLI) lose all context between sessions. They forg
 - **Conflict resolution** (timestamp-based winner selection during bidirectional sync)
 - **Quality-scored reflections** (0–1 quality score + concrete improvement suggestions per session)
 - **Meta-Learning & Strategy Scoring** (Scores strategies based on outcomes across sessions)
-- **Hybrid GraphRAG integration** (Scripts to import Microsoft GraphRAG outputs into the agent brain)
+- **MAGMA GraphRAG** (4 orthogonal graph dimensions + live hybrid semantic search)
+- **Vector Embeddings** (automatic generation via OpenAI embeddings, stored in graph)
+- **Self-Healing** (web validation, CVE scanning, autonomous healing)
+- **Procedural Memory** (workflow extraction, versioning, instantiation)
+- **Sleep Cycles** (idle-based consolidation)
 
 ## 🤖 Universal Agent Initialization (Copy & Paste)
 
@@ -84,7 +88,43 @@ global-brain/                    # This repo — the single source of truth
     └── sync-conflicts.json      # v3: conflict reports (mirrored)
 ```
 
-## Quick Start
+## MAGMA GraphRAG
+
+global-brain now includes **MAGMA** (Multi-Aspect Graph with Magnified Affinities) — a four-orthogonal graph architecture plus live hybrid retrieval.
+
+### Features
+
+- **4 Graph Dimensions**: semantic (meaning), temporal (time), causal (invalidation/conflict), entity (topic/project)
+- **Automatic Embeddings**: Text entries are embedded via OpenAI `text-embedding-ada-002` through the OCI proxy
+- **Hybrid Search**: Combines vector similarity with graph traversal (intent-aware dimension filtering)
+- **Score Fusion**: Semantic score + graph centrality + entry quality
+
+### Enabling GraphRAG
+
+Set environment variable `ENABLE_GRAPHRAG=true` before running `node src/cli.js orchestrate` or the OpenCode hooks. When enabled:
+
+1. The query from the current task is embedded.
+2. Top-20 semantically similar knowledge entries are retrieved.
+3. Graph expansion (default 1 hop) follows edges of dimensions selected by intent (see `retrieval-planner.js`).
+4. Combined scores boost the most relevant entries in the active context.
+
+### Customization
+
+- `GRAPH_RAG_TOP_K_SEMANTIC`: Number of initial semantic candidates (default 20)
+- `GRAPH_RAG_MAX_HOPS`: Graph traversal depth (default 1)
+- `EMBEDDING_CACHE_TTL_MS`: Embedding cache duration (default 1 hour)
+
+All via environment variables.
+
+### MAGMA Dimensions
+
+| Dimension | Relations | Use Case |
+|-----------|-----------|----------|
+| `semantic` | `extends`, `relates_to` (default) | Meaning-based similarity |
+| `temporal` | (future: time-based edges) | Chronology, recency |
+| `causal` | `invalidates`, `contradicts` | Cause-effect, security |
+| `entity` | `relates_to` (same topic) | Topic-centric grouping |
+
 
 ```bash
 # Clone the brain repo
