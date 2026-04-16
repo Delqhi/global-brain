@@ -138,18 +138,27 @@ export function buildActiveContext({ goal, plan, knowledge, sessionSummary, opti
     mandatoryItems = [],
     confidenceThreshold = 0.7,
     enableArtifacts = true,
-    maxKnowledgePerType = 8
+    maxKnowledgePerType = 8,
+    graphRagResults = null // Array<{id, score}> from GraphRAG search
   } = options;
 
   // Escalation-Index-basierte Sortierung (wenn verfuegbar)
-  const sortByEscalation = (entries) =>
-    [...entries]
-      .map((entry) => ({
-        ...entry,
-        escalationIndex: entry.escalationIndex ?? calculateSimplePriority(entry)
-      }))
-      .sort((a, b) => b.escalationIndex - a.escalationIndex)
-      .slice(0, maxKnowledgePerType);
+  const sortByEscalation = (entries) => {
+    const enriched = entries.map((entry) => ({
+      entry,
+      escalationIndex: entry.escalationIndex ?? calculateSimplePriority(entry),
+      graphRagScore: graphRagResults ? (graphRagResults.find((r) => r.id === entry.id)?.score ?? 0) : 0
+    }));
+
+    enriched.sort((a, b) => {
+      // Combine escalation with GraphRAG boost (30% weight)
+      const aScore = a.escalationIndex + (a.graphRagScore * 0.3);
+      const bScore = b.escalationIndex + (b.graphRagScore * 0.3);
+      return bScore - aScore;
+    });
+
+    return enriched.slice(0, maxKnowledgePerType).map(({ entry }) => entry);
+  };
 
   return {
     generatedAt: new Date().toISOString(),

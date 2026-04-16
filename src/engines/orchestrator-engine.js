@@ -1,6 +1,6 @@
 import { createRepositoryLayout } from "../lib/layout.js";
 import { writeJsonFile } from "../lib/storage.js";
-import { buildActiveContext, buildExecutionPrompt } from "./context-engine.js";
+import { buildActiveContext, buildExecutionPrompt, buildRetrievalPlan } from "./context-engine.js";
 import {
   assertStrategyIsNotForbidden,
   buildDryRunExecution,
@@ -14,6 +14,7 @@ import { reflectExecution } from "./reflection-engine.js";
 import { appendSessionMessage, buildSessionSummary, loadSessionMessages, writeSessionSummary, loadSessionSummary } from "./session-engine.js";
 import { scoreStrategy } from "./meta-learning-engine.js";
 import { bidirectionalSync } from "./bidi-sync-engine.js";
+import { searchGraphRAG } from "./graphrag-engine.js";
 
 export async function runOrchestration({
   rootDir = process.cwd(),
@@ -60,11 +61,37 @@ export async function runOrchestration({
 
   const knowledgeBefore = await loadMergedKnowledge(layout);
   const previousSessionSummary = await loadSessionSummary(layout, sessionId);
+
+  // Optional GraphRAG: if ENABLE_GRAPHRAG=true, perform hybrid search
+  let graphRagResults = null;
+  if (process.env.ENABLE_GRAPHRAG === 'true') {
+    try {
+      const retrievalPlan = buildRetrievalPlan(task, {
+        goal,
+        knowledge: knowledgeBefore,
+        sessionSummary: previousSessionSummary
+      });
+      graphRagResults = await searchGraphRAG(layout, task, {
+        intent: retrievalPlan.intent,
+        maxHops: retrievalPlan.graphHops,
+        topKSemantic: 20,
+        topKFinal: 30
+      });
+      console.log(`[Orchestrator] GraphRAG returned ${graphRagResults.length} relevant entries`);
+    } catch (error) {
+      console.warn("[Orchestrator] GraphRAG failed, proceeding without:", error.message);
+      graphRagResults = null;
+    }
+  }
+
   const contextBefore = buildActiveContext({
     goal,
     plan: planBefore,
     knowledge: knowledgeBefore,
-    sessionSummary: previousSessionSummary
+    sessionSummary: previousSessionSummary,
+    options: {
+      graphRagResults
+    }
   });
 
   const prompt = buildExecutionPrompt({
