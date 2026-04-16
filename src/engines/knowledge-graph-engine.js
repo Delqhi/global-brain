@@ -17,7 +17,7 @@ function resolveGraphFile(layout, scope) {
 }
 
 function createNodeSnapshot(entry) {
-  return {
+  const snapshot = {
     id: entry.id,
     type: entry.type,
     scope: entry.scope,
@@ -27,6 +27,13 @@ function createNodeSnapshot(entry) {
     score: entry.score ?? 1,
     updatedAt: entry.updatedAt ?? entry.createdAt ?? null
   };
+
+  // Include embedding if present (MAGMA: semantic dimension)
+  if (entry.embedding) {
+    snapshot.embedding = entry.embedding;
+  }
+
+  return snapshot;
 }
 
 function upsertNodes(graph, entries) {

@@ -14,6 +14,7 @@ import {
   enrichKnowledgeEntry
 } from "./invalidation-engine.js";
 import { updateKnowledgeGraph } from "./knowledge-graph-engine.js";
+import { generateEmbedding } from "./embedding-engine.js";
 
 const DEFAULT_SCOPE_BY_TYPE = {
   decision: "project",
@@ -198,6 +199,16 @@ export async function applyMemoryUpdate(layout, memoryUpdate, sourceMeta = {}) {
 
   for (const entry of normalized.entries) {
     const enrichedEntry = enrichKnowledgeEntry(entry);
+
+    // Generate embedding for new entry (MAGMA: semantic dimension)
+    if (!enrichedEntry.embedding && enrichedEntry.text) {
+      try {
+        enrichedEntry.embedding = await generateEmbedding(enrichedEntry.text);
+      } catch (error) {
+        console.warn(`[Memory] Embedding generation failed for entry ${enrichedEntry.id}:`, error.message);
+      }
+    }
+
     const targetEntries = enrichedEntry.scope === "global" ? globalEntries : projectEntries;
     targetEntries.push(enrichedEntry);
     addedEntries.push(cloneJsonCompatible(enrichedEntry));
