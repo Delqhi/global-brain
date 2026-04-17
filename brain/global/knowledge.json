@@ -532,6 +532,41 @@
       "driftReasons": [],
       "lastValidatedAt": "2026-04-16T00:00:00.000Z",
       "ageDays": 0
+    },
+    {
+      "id": "rule-20260417-bug-oci-001-disk-full-prevention",
+      "type": "rule",
+      "text": "OCI VM 92.5.60.87 disk-full MUSS permanent verhindert werden durch 5-Layer Protection Stack: Layer 1: runner-cleanup.timer (every 5min, cleanup-runner-libs.sh Python-glob /tmp/.*.so >10min). Layer 2: oci-space-guardian.timer (every 1h, Docker prune at >=80pct, escalation at >=85pct). Layer 3: oci-emergency-disk-guard.timer (every 5min, auto-stop all 6 a2a-sin-code-*.service if disk stays >=85pct after fast mitigations). Layer 4: oci-log-rotation.timer (daily, journald 200MB max, 7-day retention). Layer 5: oci-disk-self-test.timer (daily 03:00, 27-point verification). CRITICAL: is_healthy() in coder agents darf NIEMALS subprocess.run(['opencode', '--version']) aufrufen — das leakt ~4.4MB .so files pro call. Stattdessen: shutil.which('opencode'). Alle 6 agents haben systemd hardening drop-ins. Agent health routes muessen vor Gradio mount registriert werden.",
+      "topic": "oci-vm-disk-full-prevention-bug-oci-001",
+      "status": "active",
+      "scope": "global",
+      "score": 1,
+      "tags": [
+        "oci-vm",
+        "disk-full",
+        "bug-oci-001",
+        "systemd",
+        "hardening",
+        "5-layer-protection",
+        "runner-cleanup",
+        "never-again"
+      ],
+      "source": {
+        "projectId": "opensin-documentation",
+        "goalId": "oci-vm-hardening-bug-oci-001",
+        "sessionId": "session-20260417-opensin-documentation",
+        "sourceType": "execution"
+      },
+      "rationale": "BUG-OCI-001: 2026-04-16 OCI VM 100pct disk full weil is_healthy() opencode --version aufrief (4.4MB .so leak/call). Jetzt: 5-Layer Stack permanent aktiv.",
+      "createdAt": "2026-04-17T00:00:00.000Z",
+      "updatedAt": "2026-04-17T00:00:00.000Z",
+      "invalidatedBy": [],
+      "invalidates": [],
+      "replacesTopic": false,
+      "driftStatus": "fresh",
+      "driftReasons": [],
+      "lastValidatedAt": "2026-04-17T00:00:00.000Z",
+      "ageDays": 0
     }
   ]
 }
