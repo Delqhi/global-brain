@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.local/templates/repo-governance.schema.json",
+  "repo": "Delqhi/global-brain",
+  "issueFirstRequired": true,
+  "prWatcherRequired": true,
+  "strictDispatchMatrixRequired": false,
+  "platformRegistryRef": "platforms/registry.json",
+  "prWatcherConfigRef": "governance/pr-watcher.json",
+  "coderDispatchMatrixRef": null,
+  "workItemSchemaRef": "https://opencode.local/templates/work-item.schema.json",
+  "defaultLabels": ["inbound", "brain", "governance"],
+  "automationFlow": [
+    "1. Incoming work is normalized to the work-item schema",
+    "2. GitHub issue is created before memory or code changes begin",
+    "3. Work moves through a linked branch and pull request",
+    "4. PR watcher validates required files and fail-closed policy",
+    "5. Merge remains blocked until watcher checks pass"
+  ],
+  "failClosedRules": [
+    "Unregistered platforms are blocked",
+    "Missing webhook authentication blocks intake",
+    "Missing required files block merge",
+    "Credential leaks block merge immediately",
+    "Unknown check results block merge"
+  ],
+  "trackingIssue": 39
+}
