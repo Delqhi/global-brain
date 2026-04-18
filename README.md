@@ -3,6 +3,135 @@
 Persistent Code Plan Memory (PCPM) v3 for AI coding agents. A cross-project knowledge store, versioned plan tracker, session logger, and context injector that prevents agents from forgetting, repeating mistakes, or working without a plan.
 
 > **v3** adds a full knowledge graph, score/drift tracking, automatic invalidation derivation, timestamp-based conflict resolution, and quality-scored reflections.
+>
+> **v4 (ONE-BRAIN)** ships an always-on daemon that every agent attaches to in one millisecond-round-trip. Ultra-rules, project context, live push — zero CLI spawns. See [ROADMAP.md](./ROADMAP.md) for all phases.
+
+---
+
+## ONE-BRAIN quickstart
+
+The long-running brain-core daemon is the recommended path for all new agents.
+
+```bash
+# Local dev
+npm install
+node brain-core/daemon.js            # http :7070 (+ nats if BRAIN_NATS_URL set)
+                                     # dashboard at http://127.0.0.1:7070/
+
+# Smoke tests — all four must be green
+npm run brain:smoke                  # end-to-end auto-promotion
+npm run brain:smoke:seed             # seeds PRIORITY canon from AGENTS.md + WAL replay
+npm run brain:smoke:client           # thin-client attach() round-trip
+npm run brain:smoke:meta             # dedup + contradictions + SSE + Prometheus + dashboard
+
+# Seed authored canon (idempotent)
+BRAIN_URL=http://127.0.0.1:7070 npm run brain:seed
+
+# Build the one-shot VM install package
+npm run brain:pack                   # produces brain-oci.tar.gz
+```
+
+### Observability (Phase 3)
+
+The daemon ships its own ops UI. No Grafana, no build step, no framework.
+
+| Endpoint | What it returns |
+|---|---|
+| `GET /`              | Redirects to the live dashboard |
+| `GET /dashboard.html` | Self-contained ops UI — cards, live event feed via SSE, Ultra-canon panel, latency histogram, meta-learner summary |
+| `GET /events`         | Server-Sent-Events stream — every committed WAL record + meta events, with 50-event replay on connect |
+| `GET /metrics`        | Prometheus text exposition — counters, gauges, histograms (p50/p95/p99 rolling) |
+| `GET /stats/rich`     | One-shot `{ store, metrics }` JSON (dashboard source) |
+| `GET /admin/diagnose` | Rolls up AutoPromoter.tick + MetaLearner.tick — handy for CI |
+| `POST /admin/meta/tick` | Force MetaLearner to re-scan for contradictions and apply decay |
+| `POST /admin/tick`    | Force AutoPromoter to re-evaluate promote/demote thresholds |
+| `POST /admin/seed`    | Privileged seeding path (used by `brain:seed`) |
+
+Prometheus sample (first scrape after a few asks):
+
+```
+brain_asks_total{project="my-app"} 42
+brain_ingests_total{project="my-app",type="rule"} 7
+brain_meta_dedup_total{type="rule",via="jaccard"} 3
+brain_meta_contradictions_total{via="jaccard"} 1
+brain_ask_ms_bucket{project="my-app",le="1"} 38
+brain_ask_ms_bucket{project="my-app",le="5"} 42
+brain_cache_ultra_rules 17
+```
+
+### Reflexive meta-learning (Phase 5)
+
+On every `ingest`, before the WAL append, the `MetaLearner` runs online
+dedup: embedding-cosine + token-Jaccard dual path, polarity-aware. If the
+new entry is semantically or textually ≥ threshold to an existing active
+entry of the same type+scope and agrees on polarity, it is merged into the
+existing row (usageCount++, text appended as alias). The caller gets back
+`{ dedup: true, into: id, sim, via }` instead of a fresh insert.
+
+Every 10 minutes (or on demand via `POST /admin/meta/tick`) the batch
+subsystems run:
+
+- **Contradictions** — opposing rules with overlapping content are flagged
+  as `contradictsWith[]` and surfaced on `attach().primeContext.contradictions`
+  so agents can warn before acting on conflicting canon.
+- **Decay** — idle non-Ultra rules lose score on a 30-day half-life;
+  sub-threshold rules become AutoPromoter demote candidates.
+
+Ultra canon (authored, seeded from `AGENTS.md`) is immune to both dedup
+and decay — it's canon by construction.
+
+### Deploying to the OCI VM (92.5.60.87)
+
+```bash
+# From this repo:
+npm run brain:pack
+scp brain-oci.tar.gz ubuntu@92.5.60.87:/tmp/
+
+# On the VM (one command):
+ssh ubuntu@92.5.60.87 'mkdir -p /tmp/brain-oci \
+  && tar xzf /tmp/brain-oci.tar.gz -C /tmp/brain-oci \
+  && sudo bash /tmp/brain-oci/install.sh'
+```
+
+The installer:
+
+1. Installs Node 22 if missing.
+2. Installs `nats-server` v2.10.22 + systemd unit (skip with `INSTALL_NATS=0`).
+3. Creates the `brain` service user, writes `/etc/systemd/system/brain-core.service`, starts the daemon.
+4. Opportunistically installs native `hnswlib-node` for HNSW acceleration. Falls back to the JS vector index if it doesn't compile.
+5. Seeds `AGENTS.md` PRIORITY ≤ −4 sections as Ultra canon (skip with `SEED_AGENTS_MD=0`).
+
+After install, point agents at the daemon:
+
+```bash
+export BRAIN_URL=http://92.5.60.87:7070
+export BRAIN_NATS_URL=nats://92.5.60.87:4222    # optional but faster
+```
+
+### Agent usage (one line)
+
+```js
+import { attach } from "@opensin/brain-client";
+
+const brain = await attach({ projectId: "my-app", agentId: "gpt-5-coder" });
+// brain.primeContext.ultraRules  — authored canon (AGENTS.md PRIORITY -10..-4)
+// brain.primeContext.rules       — project-scoped rules
+// brain.primeContext.decisions   — last 20 project decisions
+// brain.primeContext.forbidden   — never-do list
+await brain.ask("how did we ship auth?");       // ~10 ms
+await brain.ingest({ type: "decision", text: "chose jose for JWT" });
+await brain.endSession({ consultedRuleIds, success: true });
+```
+
+### MCP servers
+
+| Server | Purpose | Default URL |
+|---|---|---|
+| `mcp:brain` (`src/mcp/brain-server.mjs`) | Native MCP over brain-client. Recommended for new agents. | stdio |
+| `mcp:sin-brain` (`src/mcp/sin-brain-server.mjs`) | Legacy tool names (`add_rule`, `sync_brain`, `list_global_rules`) — now thin-client over the daemon, with CLI fallback. | stdio |
+| `mcp:preview` | Opens images in macOS Preview. | stdio |
+
+---
 
 ## What It Does
 
